@@ -123,6 +123,8 @@
     });
 
     // Envios do Formulário
+
+    // Envios do Formulário
     const form = document.getElementById('donationForm');
     const submitBtn = document.getElementById('submitBtn');
     const statusMessage = document.getElementById('statusMessage');
@@ -130,34 +132,39 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       
-      if (!SCRIPT_URL || SCRIPT_URL === https://script.google.com/macros/s/AKfycbzYN4-hSGPoVeq7DUt-CG9wLcmJKujPewSIuvRzQ4PhmB57ysITldoujbftQPyywL7Few/exec) {
-        alert('Por favor, configure a URL do Google Apps Script no código HTML antes de enviar.');
+      if (!SCRIPT_URL || SCRIPT_URL.includes('COLE_AQUI')) {
+        alert('Por favor, configure a URL do Google Apps Script.');
         return;
       }
 
       submitBtn.disabled = true;
       submitBtn.innerText = 'Enviando...';
 
+      // Prepara os dados para envio
       const formData = new FormData(form);
+      const data = new URLSearchParams(formData);
 
-      fetch(SCRIPT_URL, { method: 'POST', body: formData })
-        .then(response => {
-          statusMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
-          statusMessage.classList.add('bg-emerald-100', 'text-emerald-800');
-          statusMessage.innerText = 'Obrigado! Sua doação foi registrada com sucesso.';
-          form.reset();
-        })
-        .catch(error => {
-          statusMessage.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800');
-          statusMessage.classList.add('bg-red-100', 'text-red-700');
-          statusMessage.innerText = 'Ocorreu um erro ao registrar. Tente novamente.';
-          console.error('Erro!', error.message);
-        })
-        .finally(() => {
-          submitBtn.disabled = false;
-          submitBtn.innerText = 'Confirmar Doação';
-        });
+      // Envia os dados para o Google Apps Script
+      fetch(SCRIPT_URL, { 
+        method: 'POST', 
+        body: data,
+        mode: 'no-cors' 
+      })
+      .then(() => {
+        // Exibe a mensagem de sucesso na hora
+        statusMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+        statusMessage.classList.add('bg-emerald-100', 'text-emerald-800');
+        statusMessage.innerText = 'Obrigado! Sua doação foi registrada com sucesso.';
+        form.reset();
+      })
+      .catch(error => {
+        statusMessage.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800');
+        statusMessage.classList.add('bg-red-100', 'text-red-700');
+        statusMessage.innerText = 'Ocorreu um erro ao registrar. Tente novamente.';
+        console.error('Erro:', error);
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.innerText = 'Confirmar Doação';
+      });
     });
-  </script>
-</body>
-</html>
