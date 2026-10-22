@@ -100,7 +100,7 @@
 
   <script>
     // URL do Web App gerado no Google Apps Script (substitua com a sua URL gerada no Sheets)
-    const SCRIPT_URL = 'COLE_AQUI_A_URL_DO_GOOGLE_APPS_SCRIPT';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYN4-hSGPoVeq7DUt-CG9wLcmJKujPewSIuvRzQ4PhmB57ysITldoujbftQPyywL7Few/exec';
 
     // Formatação automática do campo de telefone
     const telInput = document.getElementById('telefone');
@@ -130,7 +130,7 @@
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       
-      if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbzKgzMSPvUW0mfb4o17H9ZJ6x5cuqjc5U9pcjqRcgXF_YltVLzkhNFM-Ek1M8mf675scA/exec') {
+      if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbzYN4-hSGPoVeq7DUt-CG9wLcmJKujPewSIuvRzQ4PhmB57ysITldoujbftQPyywL7Few/exec') {
         alert('Por favor, configure a URL do Google Apps Script no código HTML antes de enviar.');
         return;
       }
