@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campanha Praça dos Peregrinos</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+
+  <div class="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
+    <!-- Cabeçalho -->
+    <div class="bg-amber-600 p-6 text-white text-center">
+      <h1 class="text-2xl font-bold tracking-tight">Campanha Praça dos Peregrinos</h1>
+      <p class="text-amber-100 text-sm mt-1 font-medium">Santuário Tabor Fonte de Vida Nova - Poços de Caldas (MG)</p>
+    </div>
+
+    <!-- Corpo do Formulário -->
+    <div class="p-6 sm:p-8">
+      <h2 class="text-xl font-semibold text-slate-800 mb-6 text-center">Registre sua doação</h2>
+
+      <form id="donationForm" class="space-y-5">
+        <!-- Nome -->
+        <div>
+          <label for="nome" class="block text-sm font-medium text-slate-700 mb-1">Nome Completo</label>
+          <input 
+            type="text" 
+            id="nome" 
+            name="nome" 
+            required 
+            placeholder="Digite seu nome"
+            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-slate-800 placeholder-slate-400"
+          />
+        </div>
+
+        <!-- Cidade -->
+        <div>
+          <label for="cidade" class="block text-sm font-medium text-slate-700 mb-1">Cidade</label>
+          <input 
+            type="text" 
+            id="cidade" 
+            name="cidade" 
+            required 
+            placeholder="Ex: Poços de Caldas / MG"
+            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-slate-800 placeholder-slate-400"
+          />
+        </div>
+
+        <!-- Telefone -->
+        <div>
+          <label for="telefone" class="block text-sm font-medium text-slate-700 mb-1">Telefone / WhatsApp</label>
+          <input 
+            type="tel" 
+            id="telefone" 
+            name="telefone" 
+            required 
+            placeholder="(35) 99999-9999"
+            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-slate-800 placeholder-slate-400"
+          />
+        </div>
+
+        <!-- Valor da Doação -->
+        <div>
+          <label for="valor" class="block text-sm font-medium text-slate-700 mb-1">Valor da doação (em R$)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-500 font-medium">R$</span>
+            <input 
+              type="text" 
+              id="valor" 
+              name="valor" 
+              required 
+              placeholder="0,00"
+              class="w-full pl-11 pr-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition text-slate-800 placeholder-slate-400"
+            />
+          </div>
+        </div>
+
+        <!-- Botão de Envio -->
+        <button 
+          type="submit" 
+          id="submitBtn"
+          class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition duration-200 ease-in-out transform active:scale-[0.98] mt-2 flex justify-center items-center"
+        >
+          <span>Confirmar Doação</span>
+        </button>
+      </form>
+
+      <!-- Mensagem de Sucesso -->
+      <div id="statusMessage" class="hidden mt-4 p-4 rounded-lg text-center text-sm font-medium"></div>
+    </div>
+  </div>
+
+  <script>
+    // URL do Web App gerado no Google Apps Script (substitua com a sua URL gerada no Sheets)
+    const SCRIPT_URL = 'COLE_AQUI_A_URL_DO_GOOGLE_APPS_SCRIPT';
+
+    // Formatação automática do campo de telefone
+    const telInput = document.getElementById('telefone');
+    telInput.addEventListener('input', (e) => {
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+      e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+    });
+
+    // Formatação do valor em reais
+    const valorInput = document.getElementById('valor');
+    valorInput.addEventListener('input', (e) => {
+      let value = e.target.value.replace(/\D/g, '');
+      if (value) {
+        value = (parseInt(value, 10) / 100).toFixed(2);
+        value = value.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        e.target.value = value;
+      } else {
+        e.target.value = '';
+      }
+    });
+
+    // Envios do Formulário
+    const form = document.getElementById('donationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusMessage = document.getElementById('statusMessage');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      if (!SCRIPT_URL || SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbzKgzMSPvUW0mfb4o17H9ZJ6x5cuqjc5U9pcjqRcgXF_YltVLzkhNFM-Ek1M8mf675scA/exec') {
+        alert('Por favor, configure a URL do Google Apps Script no código HTML antes de enviar.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Enviando...';
+
+      const formData = new FormData(form);
+
+      fetch(SCRIPT_URL, { method: 'POST', body: formData })
+        .then(response => {
+          statusMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+          statusMessage.classList.add('bg-emerald-100', 'text-emerald-800');
+          statusMessage.innerText = 'Obrigado! Sua doação foi registrada com sucesso.';
+          form.reset();
+        })
+        .catch(error => {
+          statusMessage.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800');
+          statusMessage.classList.add('bg-red-100', 'text-red-700');
+          statusMessage.innerText = 'Ocorreu um erro ao registrar. Tente novamente.';
+          console.error('Erro!', error.message);
+        })
+        .finally(() => {
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'Confirmar Doação';
+        });
+    });
+  </script>
+</body>
+</html>
